@@ -3,21 +3,19 @@ Let me first state I do not know if this goes against T-Mobile's Terms of Servic
 
 Here's how I used a raspberry Pi to overcome T-Mobile throttling on the One plan. This will enable you to use your home router with many devices connected behind it to access the internet through your T-Mobile sim card, without experiencing throttling.
 
-![Image](./images/t-mobile-throttle-defeat.png?raw=true)
-
 ## How T-Mobile throttles currently
 T-Mobile uses the time-to-live value of packets to determine if they have been routed through a phone or originate from the phone itself. To circumvent this, you want your tethered traffic to have the same TTL as phone traffic. The idea is to tether a device capable of overwriting TTL and set it to +1 over what you expect the phone's TTL to be, so that when it is routed by the phone and the TTL is decremented by 1 it is then the expected value.
 
 Most phones have a TTL of 64. This means we need our tethered device's TTL to be 65, so that when it is decremented by passing through the phone it has the identical value of 64 and cannot be differentiated.
 
-## Raspberry Pi to the rescue
+# Raspberry Pi to the rescue
 We'll be configuring the Pi to act as a bridge and then using IP Tables to overwrite the TTL on each packet. For our purposes eth0 is the adapter we're connecting to the modem and eth1 will be connected to our router's WAN port.
 
 This tutorial assumes you've installed Raspbian Stretch Lite and you're logged into the console (e.g. not ssh'd)
 
     sudo apt update && sudo apt upgrade -y && sudo apt install rpi-update dnsmasq iptables-persistent -y && sudo rpi-update
 
-# Connect Pi wifi to your T-Mobile hotspot
+## Configure a static IP
 
 I suppose you could just turn on the wifi hotspot on your android phone.  I found it more reliable to pick up a hotspot device. I'm using a Netgear LB1121 I got on Amazon for about $120 along with a generic USB-to-Ethernet adapter.
 
